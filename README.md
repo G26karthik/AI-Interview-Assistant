@@ -1,176 +1,203 @@
-# AI Interview Assistant (Swipe Internship Assignment)
+<div align="center">
 
-A full-stack-ready React + Vite application that fulfils the **Swipe Internship – AI-Powered Interview Assistant** brief. The app guides candidates through an AI-led, timed interview while giving interviewers a live dashboard to review progress, scoring, and transcripts.
+# AI Interview Assistant
 
-> **Live Demo**: _Add your deployed Netlify/Vercel URL here_
+An AI‑powered, timed technical interview conducted in the browser. Candidates upload a resume, answer 6 adaptive difficulty questions with visible timers, and receive an internally stored AI score + summary. Interviewers get a live dashboard with sortable results, transcripts, and export.
 
-## Table of Contents
-- [Architecture Overview](#architecture-overview)
-- [Core Features](#core-features)
-- [Interview Experience](#interview-experience)
-- [Interviewer Dashboard](#interviewer-dashboard)
-- [Persistence & Resume Logic](#persistence--resume-logic)
-- [Getting Started](#getting-started)
-	- [Prerequisites](#prerequisites)
-	- [Installation](#installation)
-	- [Running Locally](#running-locally)
-- [Configuration](#configuration)
-	- [Environment Variables](#environment-variables)
-	- [Why Use a Proxy?](#why-use-a-proxy)
-- [Testing](#testing)
-- [Building for Production](#building-for-production)
-- [Deployment Notes](#deployment-notes)
-	- [Vercel](#vercel)
-	- [Netlify](#netlify)
-- [Project Structure](#project-structure)
-- [Known Limitations](#known-limitations)
-- [Roadmap Ideas](#roadmap-ideas)
+<strong>Non‑technical summary:</strong> This app lets a recruiter send one link. A candidate drops in their resume, the system asks timed questions, scores the answers using AI, and the recruiter sees organized results—without installing anything.
 
-## Architecture Overview
-- **Frontend**: React 18 + Vite + Ant Design
-- **State**: Redux Toolkit with `redux-persist` (localStorage) for cross-tab persistence
-- **AI Layer**: Groq API (Llama 3.1) with optional serverless proxy for secure key usage
-- **Document Parsing**: `pdfjs-dist` for PDFs, `mammoth` for DOCX
-- **Build/Test**: Vite build pipeline, Vitest + Testing Library
+<br/>
 
-## Core Features
-- 📄 **Resume ingestion**: Upload PDF/DOCX, extract Name, Email, Phone.
-- � **Contact capture assist**: If a detail is missing, the chat politely asks for it—no separate form required.
-- �🧠 **AI-driven interview**: 6-question plan (2 Easy @ 20 s, 2 Medium @ 60 s, 2 Hard @ 120 s). Questions are streamed from Groq.
-- ⏱️ **Per-question timers**: Auto-submit on timeout, answers scored immediately by AI.
--  **Interviewer dashboard**: Score-ordered candidate list, search, transcript viewer, resume snippet, PDF export.
-- 💾 **Persistence**: Timers, answers, scoring, and resume text survive reloads via `redux-persist`.
-- 📡 **Offline scoring queue**: Retries pending AI scoring jobs when connectivity returns.
+_Add Deployment URL here (Netlify / Vercel)_
 
-## Interview Experience
-1. Candidate uploads a resume.
-2. App auto-populates Name/Email/Phone directly in the chat, prompting for any missing fields before starting.
-3. The AI streams a question per difficulty tier. Timer begins as soon as the question is fully displayed.
-4. Answer submission is manual or automatic when time expires (blank answers are allowed).
-5. After six questions, Groq produces a weighted score and concise interview summary.
-
-## Interviewer Dashboard
-- Default sorting by score (highest first); supports Ant Design column sorting and name/email search.
-- Detail modal reveals:
-	- Contact info (name/email/phone)
-	- AI-generated summary
-	- Resume preview (first 400 chars)
-	- Full question & answer transcript with per-question scores
-- PDF export (`jsPDF`) for offline review or sharing.
-
-## Persistence & Resume Logic
-- `redux-persist` stores entire `candidates` slice in localStorage.
-- Session timers track `remaining`, `startedAt`, and `needsWelcome` so reloading rehydrates the countdown accurately.
-- `beforeunload` hook pauses active interviews and flags them for the Welcome Back modal on the next visit.
-- Contact info prompts are persisted in the chat log, preserving context if the tab reloads mid-intake.
-
-## Getting Started
-
-### Prerequisites
-- Node.js **18+** (enable native fetch and Vite compatibility)
-- npm **9+** (ships with recent Node versions)
-
-### Installation
-```bash
-npm install
-```
-
-### Running Locally
-```bash
-npm run dev
-```
-- Opens the dev server at http://localhost:5173
-- Ensure an AI key is configured (see [Configuration](#configuration)) or the UI will block interviews with an “AI unavailable” banner.
-
-## Configuration
-
-### Environment Variables
-Create a `.env` file in the project root with **one** of the following setups:
-
-```
-# Option A: Direct browser key (development only)
-VITE_GROQ_API_KEY=your_groq_key
-
-# Option B: Secure proxy (recommended for production)
-VITE_USE_PROXY=true
-```
-
-If neither variable is set, the chat tab displays an error banner and interviewing is disabled.
-
-### Why Use a Proxy?
-- Shipping the Groq key to the browser is convenient for local testing but unsafe for public deployments.
-- Use the included serverless functions to keep the key server-side:
-	- `api/groq-proxy.js` (Vercel)
-	- `netlify/functions/groq-proxy.js` (Netlify)
-
-Set the platform’s `GROQ_API_KEY` environment variable and point the frontend to the proxy by enabling `VITE_USE_PROXY=true`.
-
-## Testing
-```bash
-npm test
-```
-- Runs Vitest suites for the Redux slice and timer hook.
-- Uses jsdom environment to simulate browser APIs.
-
-## Building for Production
-```bash
-npm run build
-```
-- Outputs optimized assets to `dist/`.
-- The pdf.js worker is ~2 MB, so Vite will warn about large chunks—this is expected because the worker must ship in full.
-
-## Deployment Notes
-
-### Vercel
-1. Push the repo to GitHub.
-2. Create a Vercel project and import the repo.
-3. Set environment variables:
-	 - `VITE_USE_PROXY=true`
-	 - `GROQ_API_KEY=<your key>` (used by `api/groq-proxy.js`)
-4. Deploy. Vercel auto-builds using `npm run build` and serves the Vite output plus `/api/groq-proxy`.
-
-### Netlify
-1. Push repo and connect it in Netlify.
-2. Configure build settings:
-	 - Build command: `npm run build`
-	 - Publish directory: `dist`
-3. Add environment variables:
-	 - `VITE_USE_PROXY=true`
-	 - `GROQ_API_KEY=<your key>`
-4. Netlify detects the `netlify/functions` directory and deploys `groq-proxy` at `/.netlify/functions/groq-proxy`.
-5. Confirm your frontend is pointing to that path (default setup already does).
-
-## Project Structure
-```
-├── api/                     # Vercel serverless proxy
-├── netlify/functions/       # Netlify serverless proxy
-├── src/
-│   ├── api/groq.js          # Groq client wrappers + streaming helpers
-│   ├── components/          # UI components (chat, dashboard, resume uploader)
-│   ├── features/            # Redux slices (candidates + session state)
-│   ├── hooks/useTimer.js    # Persistent timer hook
-│   ├── store.js             # Redux store + persistence wiring
-│   ├── utils/resumeParser.js# PDF/DOCX parsing + field extraction
-│   └── tests/               # Vitest suites
-├── package.json
-├── vite.config.js / vitest.config.js
-└── README.md
-```
-
-## Known Limitations
-- A valid Groq API key (or working proxy) is required—without it the interview tab is locked.
-- AI responses depend on Groq availability and latency; failures fall back to friendly error messages or neutral scores.
-- Large resumes are truncated (first 2,500 chars) to keep prompts within model limits.
-
-## Roadmap Ideas
-- Background worker to automatically retry pending scoring operations.
-- Rich analytics for interviewer dashboard (topic heatmaps, trend lines).
-- Audio-assisted interviews (text-to-speech for questions, speech-to-text for answers).
-- Role-based authentication to separate interviewer/candidate views.
-
-## Design Decisions
-- Removed an explicit manual "Pause" button: candidate experience is uninterrupted; session auto-pauses on navigation/refresh and a Welcome Back modal (with Resume / Discard) restores context—fulfilling the spec intent with less friction.
+</div>
 
 ---
 
-This project is released under the MIT License. Contributions and forks are welcome—feel free to open an issue or PR!
+## 1. What This Delivers (Spec / JD Alignment Checklist)
+| Requirement (JD) | Delivered | Notes |
+|------------------|-----------|-------|
+| Upload resume (PDF/DOCX) | ✅ | Parsed client‑side (pdfjs + mammoth) |
+| Auto extract name / email / phone | ✅ | Heuristic extraction + normalization |
+| Prompt user for any missing contact fields | ✅ | Chat injects polite requests (no extra form) |
+| Generate 6 AI questions (2 Easy, 2 Medium, 2 Hard) | ✅ | Difficulty plan fixed and enforced |
+| Timed questions (20s / 60s / 120s) | ✅ | Per‑question countdown; auto submit on zero |
+| AI scoring of each answer | ✅ | Structured JSON scoring per response |
+| Weighted final score + summary | ✅ | Difficulty weights applied | 
+| Persist state across refresh / accidental close | ✅ | redux‑persist + Welcome Back modal |
+| Dashboard: list candidates, sorted | ✅ | Default sort by score, column sorting, search |
+| View per‑question transcript & scores | ✅ | Modal detail view |
+| Export or store results | ✅ | PDF export via jsPDF |
+| Graceful handling of AI/API errors | ✅ | Fallback messages, retry queue for scoring |
+| Clean UI (React + modern toolkit) | ✅ | Ant Design components |
+| No exposed secret keys in production | ✅ | Optional serverless proxy for Groq |
+
+---
+
+## 2. Quick Start (Non‑Technical Friendly)
+1. Install Node.js 18+ (from nodejs.org). That’s the only tool required.
+2. Clone or download this repository.
+3. Open a terminal in the project folder.
+4. Run: `npm install` (installs dependencies).
+5. Add one environment variable option (see below) to a `.env` file.
+6. Run: `npm run dev` then open the printed URL (usually http://localhost:5173).
+7. Upload a resume and start interviewing.
+
+If you deploy to Netlify or Vercel, just set the environment variables there—no other backend setup required.
+
+---
+
+## 3. How the Interview Flow Works
+1. Candidate uploads a resume (PDF/DOCX). Text gets truncated to a safe prompt size.
+2. System auto-detects name/email/phone; any missing items are requested conversationally.
+3. Difficulty plan loads (E,E,M,M,H,H). Each question is streamed token‑by‑token from the Groq Llama 3.1 model.
+4. Timer starts when the full question has arrived (protects against truncated streaming).
+5. Candidate types answer; submitting early stops the timer. On timeout, an empty answer is still scored for consistency.
+6. Scoring prompt returns a JSON object (score + rationale). Stored immediately.
+7. After 6 answers the final weighted score and a concise summary are generated.
+8. Dashboard view updates automatically; interviewer can open details or export PDF.
+
+---
+
+## 4. Core Feature Highlights
+| Feature | Implementation Details |
+|---------|------------------------|
+| Streaming questions | Fetch with ReadableStream; assembled safely, index reconciliation prevents partial overwrite |
+| Per-question timers | Redux slice stores `startedAt` + remaining; rehydrates after reload |
+| Persistence | Entire candidates slice persisted through `redux-persist` (localStorage) |
+| Welcome Back recovery | `needsWelcome` flag set on unload → modal offers Resume / Discard |
+| Resume parsing | `pdfjs-dist` + `mammoth`; heuristic regex for contact fields; normalization of phone/email |
+| AI integration | Groq Llama 3.1; separate prompts for question generation, scoring, summary |
+| Weighted scoring | Difficulty weight map; final composite score computed deterministically |
+| Offline / transient error handling | Uns cored answers queued; retry when connectivity returns |
+| Dashboard insights | Sort by score, search, modal transcript, pdf export |
+| Testing | Vitest for reducers + timer logic |
+
+---
+
+## 5. Architecture Overview
+```
+React (UI) ─┬─ Ant Design components
+            ├─ Redux Toolkit (state)
+            │    └─ persisted via localStorage (redux-persist)
+            ├─ Groq API wrapper (questions / scoring / summary)
+            ├─ Resume Parser (pdfjs + mammoth → heuristics)
+            └─ Timer Hook (recomputes remaining time on hydration)
+```
+Key Files:
+- `src/features/candidatesSlice.js` – State machine: interview progression, timers, scoring, summary generation
+- `src/components/InterviewChat.jsx` – Streaming Q&A, answer submission, timer binding
+- `src/components/InterviewerDashboard.jsx` – Table + detail modal + PDF export
+- `src/components/ResumeUploader.jsx` – File ingestion & parsing
+- `src/components/WelcomeBackModal.jsx` – Resume / discard decision on reload
+- `src/api/groq.js` – Encapsulates Groq fetch calls & prompt templates
+- `src/utils/resumeParser.js` – Extraction & normalization heuristics
+
+---
+
+## 6. Data & State Model (Simplified)
+```ts
+Candidate = {
+  id: string,
+  name: string,
+  email: string,
+  phone: string,
+  resumeText: string,
+  questions: [ { id, difficulty, text, answer, score, rationale } ],
+  currentQuestionIndex: number,
+  timers: { remaining: number, startedAt: number | null },
+  finalScore: number | null,
+  summary: string | null,
+  status: 'in-progress' | 'completed',
+  needsWelcome: boolean
+}
+```
+Timers recalculate remaining = previousRemaining - (now - startedAt) on rehydrate. If <= 0, answer auto-submitted.
+
+---
+
+## 7. Configuration & Environment
+Create `.env` with one of:
+```
+# Dev only (exposes key to browser)
+VITE_GROQ_API_KEY=your_key_here
+
+# Production-friendly (use serverless proxy)
+VITE_USE_PROXY=true
+```
+If `VITE_USE_PROXY=true`, deploy one of the included serverless functions and set `GROQ_API_KEY` in the platform dashboard. The frontend detects proxy mode automatically.
+
+Why a proxy? Avoids leaking API keys; isolates prompt surface; lets you add auth or logging later.
+
+---
+
+## 8. Running, Testing, Building
+Development:
+```
+npm install
+npm run dev
+```
+Tests:
+```
+npm test
+```
+Production build:
+```
+npm run build
+```
+Output goes to `dist/`. Large pdf.js worker chunk warning is expected.
+
+---
+
+## 9. Deployment (Vercel / Netlify)
+Vercel Quick Steps:
+1. Import repo → set `VITE_USE_PROXY=true` & `GROQ_API_KEY`.
+2. Deploy (auto build). Proxy served at `/api/groq-proxy`.
+
+Netlify Quick Steps:
+1. Connect repo → build command `npm run build`, publish `dist`.
+2. Set `VITE_USE_PROXY=true` & `GROQ_API_KEY`.
+3. Proxy runs at `/.netlify/functions/groq-proxy` (already referenced by client code).
+
+---
+
+## 10. Design Decisions & Trade‑offs
+| Decision | Rationale | Alternative Considered |
+|----------|-----------|------------------------|
+| No manual Pause button | Less cognitive load; auto-resume path via modal | Explicit pause/resume controls |
+| 6 fixed questions (E,E,M,M,H,H) | Predictable scoring distribution | Dynamic adaptive difficulty |
+| LocalStorage persistence | Simplicity for assignment scope | Backend DB (adds infra) |
+| Serverless proxy optional | Keeps prod secrets safe; still easy local dev | Always exposing key (security risk) |
+| Streaming + index reconciliation | Prevents partial overwrites of questions | Wait for full text (adds latency) |
+| Heuristic resume parsing | Fast, no dependency on external NLP | External enrichment API |
+
+---
+
+## 11. Extensibility Ideas
+- Add authentication & role separation.
+- Plug in speech-to-text for answers; TTS for questions.
+- Replace heuristic parser with an embedding or NER service.
+- Add analytics dashboard (topic coverage, average scores trend).
+- Persist to a backend (Supabase / Firebase / Postgres) for multi-recruiter usage.
+- Add proctoring signals (focus change, answer length anomalies).
+
+---
+
+## 12. Limitations
+- Requires valid Groq API access; network failures degrade to queued retries.
+- Large resumes truncated (~2,500 chars) to control prompt size.
+- No authentication or multi-tenant security boundaries (assignment scope).
+
+---
+
+## 13. License
+MIT — feel free to fork, extend, or adapt. PRs welcome.
+
+---
+
+## 14. At a Glance (One‑Screen Summary)
+Resume in → AI asks 6 timed questions → Each answer scored → Final weighted score + summary → Recruiter views/export results.
+
+---
+
+<sub>Built with React, Vite, Redux Toolkit, Ant Design, Groq (Llama 3.1), pdfjs, mammoth, Vitest.</sub>
