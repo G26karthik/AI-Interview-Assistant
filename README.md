@@ -168,6 +168,9 @@ npm run build
 - Audio-assisted interviews (text-to-speech for questions, speech-to-text for answers).
 - Role-based authentication to separate interviewer/candidate views.
 
+## Design Decisions
+- Removed an explicit manual "Pause" button: candidate experience is uninterrupted; session auto-pauses on navigation/refresh and a Welcome Back modal (with Resume / Discard) restores context—fulfilling the spec intent with less friction.
+
 ---
 
-This project is released under the MIT License. Contributions and forks are welcome—feel free to open an issue or PR!*** End Patch
+This project is released under the MIT License. Contributions and forks are welcome—feel free to open an issue or PR!

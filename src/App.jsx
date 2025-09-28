@@ -7,7 +7,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import ScoreQueueWorker from './components/ScoreQueueWorker.jsx';
 import { AI_MODE } from './api/groq.js';
-import { pauseSession, resumeSession } from './features/candidatesSlice.js';
+import { pauseSession, resumeSession, finishSession } from './features/candidatesSlice.js';
+import WelcomeBackModal from './components/WelcomeBackModal.jsx';
 
 const { Header, Content } = Layout;
 
@@ -56,12 +57,13 @@ export default function App(){
           { key:'i2', label:'Interviewer', children:<InterviewerDashboard />}
         ]} />
       </ErrorBoundary>
-      <Modal open={welcome && !!resumeTarget} onCancel={()=>setWelcome(false)} onOk={()=>{
-        if(resumeTarget) dispatch(resumeSession({id: resumeTarget.id, now: Date.now()}));
-        setWelcome(false);
-      }} title="Welcome Back" okText="Resume" cancelText="Later">
-        You have an unfinished interview. You can continue where you left off.
-      </Modal>
+      <WelcomeBackModal
+        visible={welcome && !!resumeTarget}
+        candidate={resumeTarget}
+        onResume={() => { if(resumeTarget) dispatch(resumeSession({id: resumeTarget.id, now: Date.now()})); setWelcome(false); }}
+        onDiscard={() => { if(resumeTarget) dispatch(finishSession({id: resumeTarget.id, now: Date.now()})); setWelcome(false); }}
+        onClose={() => setWelcome(false)}
+      />
     </Content>
   </Layout>;
 }
