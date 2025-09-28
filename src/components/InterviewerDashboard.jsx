@@ -29,7 +29,12 @@ export default function InterviewerDashboard(){
   };
   const columns = [
     {title:'Name', dataIndex:'name', sorter:(a,b)=> (a.name||'').localeCompare(b.name||'')},
-    {title:'Score', dataIndex:'score', sorter:(a,b)=> (a.score||0)-(b.score||0), render:s=> s==null? <Tag>In Progress</Tag>: s},
+    {
+      title: 'Score',
+      dataIndex: 'score',
+      sorter: (a, b) => (a.score || 0) - (b.score || 0),
+      render: (s) => (typeof s === 'number' ? s.toFixed(1) : <Tag>In Progress</Tag>)
+    },
     {title:'Summary', dataIndex:'summary', ellipsis:true},
     {title:'Details', render:(_,r)=> <>
       <a style={{marginRight:8}} onClick={()=>Modal.info({

@@ -9,8 +9,20 @@ const PROXY_ENDPOINT = '/api/groq-proxy';
 export const AI_MODE = (USE_PROXY || API_KEY) ? 'LIVE' : 'UNAVAILABLE';
 export const weights = { Easy: 1, Medium: 1.5, Hard: 2 };
 
+const LEVEL_BRIEF = {
+  Easy: 'Ask for a hands-on explanation of fundamentals or a small improvement to something they have shipped.',
+  Medium: 'Pose a realistic scenario that stretches their recent project experience and requires trade-off thinking.',
+  Hard: 'Dig into system design or deep debugging that stresses scalability, reliability, or performance in a real production context.'
+};
+
 function ensureAvailable(){
   if(AI_MODE === 'UNAVAILABLE') throw new Error('AI unavailable: configure VITE_GROQ_API_KEY or VITE_USE_PROXY');
+}
+
+function buildQuestionPrompt(level, role, context='') {
+  const ctx = context ? `Candidate Resume:\n${context}\n---` : '';
+  const tone = LEVEL_BRIEF[level] || LEVEL_BRIEF.Medium;
+  return `You are a principal engineer conducting a real-time interview for a ${role} candidate. Speak exactly as you would in a live conversation.\n${ctx}\nCraft one follow-up question that:\n- explicitly references the candidate's actual work history or tech stack;\n- matches the ${level} difficulty (${tone});\n- avoids stock phrases like "Design a scalable system" unless you anchor it to something they shipped;\n- fits in one or two sentences and sounds natural ("Can you walk me through...", "How would you handle...").\nDo not add numbering, preambles, or quotes. Respond with the question only.`;
 }
 
 async function groqChat(messages, { model = MODEL_Q, temperature = 0.4, max_tokens = 256, stream=false } = {}, retries = 2){
@@ -34,16 +46,14 @@ async function groqChat(messages, { model = MODEL_Q, temperature = 0.4, max_toke
 
 export async function generateQuestion(level, role='Full Stack React/Node', context='') {
   try {
-    const ctx = context ? `Candidate Resume (truncated):\n${context.slice(0,1200)}\n---` : '';
-    const prompt = `You are an expert technical interviewer.\n${ctx}\nYour task: Write ONE interview question for a ${role} role, tailored to the candidate's actual resume, experience, and skills. Do NOT ask generic, React-only, or boilerplate questions. Use the resume to infer relevant topics, technologies, or gaps. The question should be specific, non-trivial, and clearly based on the candidate's background.\nRules: No numbering, no preamble, no quotes. Only output the question.`;
+    const prompt = buildQuestionPrompt(level, role, context);
     const content = await groqChat([{role:'user', content: prompt}]);
     return content.replace(/^[\d\-\)\.\s]+/, '').slice(0,300);
   } catch(e){ console.warn('Question generation failed', e); throw e; }
 }
 
 export async function streamQuestion(level, role='Full Stack React/Node', onToken, context='') {
-  const ctx = context ? `Candidate Resume (truncated):\n${context.slice(0,1200)}\n---` : '';
-  const prompt = `You are an expert technical interviewer.\n${ctx}\nYour task: Write ONE interview question for a ${role} role, tailored to the candidate's actual resume, experience, and skills. Do NOT ask generic, React-only, or boilerplate questions. Use the resume to infer relevant topics, technologies, or gaps. The question should be specific, non-trivial, and clearly based on the candidate's background.\nRules: No numbering, no preamble, no quotes. Only output the question.`;
+  const prompt = buildQuestionPrompt(level, role, context);
   const messages = [{role:'user', content: prompt}];
   const stream = await groqChat(messages, { model: MODEL_Q, stream:true, temperature:0.35, max_tokens: 180 });
   const reader = stream.getReader();

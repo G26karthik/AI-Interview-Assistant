@@ -35,16 +35,16 @@ A full-stack-ready React + Vite application that fulfils the **Swipe Internship 
 
 ## Core Features
 - 📄 **Resume ingestion**: Upload PDF/DOCX, extract Name, Email, Phone.
-- 🧠 **AI-driven interview**: 6-question plan (2 Easy @ 20 s, 2 Medium @ 60 s, 2 Hard @ 120 s). Questions are streamed from Groq.
+- � **Contact capture assist**: If a detail is missing, the chat politely asks for it—no separate form required.
+- �🧠 **AI-driven interview**: 6-question plan (2 Easy @ 20 s, 2 Medium @ 60 s, 2 Hard @ 120 s). Questions are streamed from Groq.
 - ⏱️ **Per-question timers**: Auto-submit on timeout, answers scored immediately by AI.
-- 🛑 **Pause & resume**: Candidate can pause; app auto-pauses on tab close and re-opens with a “Welcome Back” modal.
-- 📊 **Interviewer dashboard**: Score-ordered candidate list, search, transcript viewer, resume snippet, PDF export.
+-  **Interviewer dashboard**: Score-ordered candidate list, search, transcript viewer, resume snippet, PDF export.
 - 💾 **Persistence**: Timers, answers, scoring, and resume text survive reloads via `redux-persist`.
 - 📡 **Offline scoring queue**: Retries pending AI scoring jobs when connectivity returns.
 
 ## Interview Experience
 1. Candidate uploads a resume.
-2. App auto-populates Name/Email/Phone, prompting for any missing fields before starting.
+2. App auto-populates Name/Email/Phone directly in the chat, prompting for any missing fields before starting.
 3. The AI streams a question per difficulty tier. Timer begins as soon as the question is fully displayed.
 4. Answer submission is manual or automatic when time expires (blank answers are allowed).
 5. After six questions, Groq produces a weighted score and concise interview summary.
@@ -62,6 +62,7 @@ A full-stack-ready React + Vite application that fulfils the **Swipe Internship 
 - `redux-persist` stores entire `candidates` slice in localStorage.
 - Session timers track `remaining`, `startedAt`, and `needsWelcome` so reloading rehydrates the countdown accurately.
 - `beforeunload` hook pauses active interviews and flags them for the Welcome Back modal on the next visit.
+- Contact info prompts are persisted in the chat log, preserving context if the tab reloads mid-intake.
 
 ## Getting Started
 

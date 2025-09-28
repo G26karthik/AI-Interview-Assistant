@@ -4,7 +4,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { InboxOutlined } from '@ant-design/icons';
 import { parsePDF, parseDOCX, extractFields } from '../utils/resumeParser.js';
 import { useDispatch } from 'react-redux';
-import { addCandidate, updateCandidate } from '../features/candidatesSlice.js';
+import { addCandidate } from '../features/candidatesSlice.js';
 
 export default function ResumeUploader(){
   const [loading,setLoading] = useState(false);
@@ -32,6 +32,6 @@ export default function ResumeUploader(){
       <p style={{fontSize:12, color:'#666'}}>We parse text only locally; keep file under ~2MB for best results.</p>
     </Upload.Dragger>
   {loading && <span style={{display:'flex',alignItems:'center',gap:6,fontSize:13}}><LoadingOutlined spin /> Parsing resume...</span>}
-    <Alert type="info" showIcon message="After upload: complete any missing fields then press Start Interview in the details card." />
+    <Alert type="info" showIcon message="After upload we'll auto-extract your contact details. The chat will only ask for anything we still need." />
   </Space>;
 }
