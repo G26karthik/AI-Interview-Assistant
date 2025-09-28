@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Layout, Tabs, Modal, Button, Alert, Switch, Tooltip, Grid } from 'antd';
 import { BulbOutlined, BulbFilled } from '@ant-design/icons';
+import logoUrl from './assets/logo.svg';
 import ResumeUploader from './components/ResumeUploader.jsx';
 import InterviewChat from './components/InterviewChat.jsx';
 import InterviewerDashboard from './components/InterviewerDashboard.jsx';
@@ -64,7 +65,7 @@ export default function App(){
           {AI_MODE==='LIVE'? 'Live AI':'Mock'}
         </div>
         <div style={{display:'flex',alignItems:'center',gap:10}}>
-          <LogoMark />
+          <img src={logoUrl} alt="App Logo" width={28} height={28} style={{display:'block'}} />
           <h1 style={{margin:0,fontSize:18,fontWeight:600,letterSpacing:.5}} className="brand-gradient">AI Interview Assistant</h1>
         </div>
       </div>
@@ -105,20 +106,4 @@ export default function App(){
       />
     </Content>
   </Layout>;
-}
-
-function LogoMark(){
-  return (
-    <svg width="26" height="26" viewBox="0 0 64 64" role="img" aria-label="Logo" style={{display:'block'}}>
-      <defs>
-        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#5a9bff" />
-          <stop offset="55%" stopColor="#7b5bff" />
-          <stop offset="100%" stopColor="#ff5884" />
-        </linearGradient>
-      </defs>
-      <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g1)" />
-      <path d="M20 42c6.5-1 11-5.5 12-14 1.2 9 5.7 13 12 14-4 3-8 6-12 10-4-4-8-7-12-10Z" fill="#ffffff" fillOpacity="0.85" />
-    </svg>
-  );
 }
