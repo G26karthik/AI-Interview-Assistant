@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Layout, Tabs, Modal, Button, Alert } from 'antd';
+import { Layout, Tabs, Modal, Button, Alert, Switch, Tooltip, Grid } from 'antd';
+import { BulbOutlined, BulbFilled } from '@ant-design/icons';
 import ResumeUploader from './components/ResumeUploader.jsx';
 import InterviewChat from './components/InterviewChat.jsx';
 import InterviewerDashboard from './components/InterviewerDashboard.jsx';
@@ -19,6 +20,8 @@ export default function App(){
   const [showResume,setShowResume] = useState(false);
   const [welcome,setWelcome] = useState(false);
   const [resumeId,setResumeId] = useState(null);
+  const [dark,setDark] = useState(()=> localStorage.getItem('theme') !== 'light');
+  const screens = Grid.useBreakpoint();
   const shownWelcomeTokens = useRef(new Set());
 
   const welcomeToken = welcomeCandidate && welcomeCandidate.session.lastPausedAt
@@ -46,16 +49,52 @@ export default function App(){
 
   const resumeTarget = resumeId ? list.find(c=>c.id===resumeId) : welcomeCandidate;
 
-  return <Layout style={{minHeight:'100vh'}}>
-    <Header style={{color:'#fff', fontWeight:600}}>AI Interview Assistant</Header>
-    <Content style={{padding:24}}>
+  useEffect(()=>{
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    localStorage.setItem('theme', dark? 'dark':'light');
+  },[dark]);
+
+  const compact = !screens.md; // below md collapse tab labels maybe later
+
+  return <Layout style={{minHeight:'100vh'}} data-theme={dark? 'dark':'light'}>
+    <Header className="header-blur" style={{display:'flex',alignItems:'center',gap:compact?12:20,padding:compact? '0 16px':'0 32px',height:64}}>
+      <div style={{flex:1,display:'flex',alignItems:'center',gap:14}}>
+        <div className="pill-badge" aria-label={AI_MODE==='LIVE'? 'Live AI Mode':'Mock AI Mode'}>
+          <span style={{width:10,height:10,borderRadius:'50%',background: AI_MODE==='LIVE'? '#4ade80':'#fbbf24',boxShadow:`0 0 0 4px ${AI_MODE==='LIVE'? 'rgba(74,222,128,0.25)':'rgba(251,191,36,0.25)'}`}} />
+          {AI_MODE==='LIVE'? 'Live AI':'Mock'}
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:10}}>
+          <LogoMark />
+          <h1 style={{margin:0,fontSize:18,fontWeight:600,letterSpacing:.5}} className="brand-gradient">AI Interview Assistant</h1>
+        </div>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:12}}>
+        <Tooltip title={dark? 'Switch to Light':'Switch to Dark'}>
+          <Button size="small" type="text" aria-label="toggle theme" onClick={()=>setDark(d=>!d)} icon={dark? <BulbFilled style={{color:'#facc15'}} />:<BulbOutlined style={{color:'#e2e8f0'}} />} />
+        </Tooltip>
+        <Tooltip title="Show/Hide Resume Uploader">
+          <Switch
+            onChange={()=>setShowResume(s=>!s)}
+            checked={showResume}
+            checkedChildren="Resume"
+            unCheckedChildren="Resume"
+            style={{background:'#303744'}}
+          />
+        </Tooltip>
+      </div>
+    </Header>
+    <Content className="app-shell fade-in">
       <ErrorBoundary>
         <ScoreQueueWorker />
         {AI_MODE==='UNAVAILABLE' && <Alert type="error" showIcon style={{marginBottom:16}} message="AI unavailable: set VITE_GROQ_API_KEY or configure proxy before interviews can start." />}
-        <Tabs items={[
-          { key:'i1', label:'Interviewee', children:<div>{showResume && <ResumeUploader />}<InterviewChat /><Button style={{marginTop:16}} onClick={()=>setShowResume(s=>!s)}>{showResume? 'Hide Resume Uploader':'Upload Another Resume'}</Button></div>},
-          { key:'i2', label:'Interviewer', children:<InterviewerDashboard />}
-        ]} />
+        <Tabs
+          size={compact? 'small':'large'}
+          tabBarGutter={compact? 8:32}
+          items={[
+            { key:'i1', label: compact? 'Candidate':'Interviewee', children:<div>{showResume && <ResumeUploader />}<InterviewChat /><Button style={{marginTop:16}} onClick={()=>setShowResume(s=>!s)}>{showResume? 'Hide Resume Uploader':'Upload Another Resume'}</Button></div>},
+            { key:'i2', label: compact? 'Admin':'Interviewer', children:<InterviewerDashboard />}
+          ]}
+        />
       </ErrorBoundary>
       <WelcomeBackModal
         visible={welcome && !!resumeTarget}
@@ -66,4 +105,20 @@ export default function App(){
       />
     </Content>
   </Layout>;
+}
+
+function LogoMark(){
+  return (
+    <svg width="26" height="26" viewBox="0 0 64 64" role="img" aria-label="Logo" style={{display:'block'}}>
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#5a9bff" />
+          <stop offset="55%" stopColor="#7b5bff" />
+          <stop offset="100%" stopColor="#ff5884" />
+        </linearGradient>
+      </defs>
+      <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g1)" />
+      <path d="M20 42c6.5-1 11-5.5 12-14 1.2 9 5.7 13 12 14-4 3-8 6-12 10-4-4-8-7-12-10Z" fill="#ffffff" fillOpacity="0.85" />
+    </svg>
+  );
 }

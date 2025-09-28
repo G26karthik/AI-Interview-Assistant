@@ -61,7 +61,7 @@ export default function InterviewerDashboard(){
     </>},
     {title:'Topics', render:(_,r)=> r.topicStats? Object.entries(r.topicStats).map(([t,v])=> <Tag key={t}>{t}:{(v.total/v.count).toFixed(1)}</Tag>) : null},
   ];
-  return <div>
+  return <div className="fade-in">
     <Input placeholder="Search by name" style={{marginBottom:12,maxWidth:300}} value={q} onChange={e=>setQ(e.target.value)} />
     <Button danger style={{marginBottom:12,marginLeft:12}} onClick={()=>dispatch(clearHistory())}>Clear All History</Button>
     <Table rowKey="id" dataSource={filtered} columns={columns} pagination={{pageSize:5}} size="small" />

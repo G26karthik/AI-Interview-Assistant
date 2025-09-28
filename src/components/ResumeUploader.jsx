@@ -25,7 +25,7 @@ export default function ResumeUploader(){
     return false; // prevent auto
   };
 
-  return <Space direction="vertical" style={{width:'100%'}}>
+  return <Space direction="vertical" style={{width:'100%'}} className="glass-panel card-clean" >
     <Upload.Dragger multiple={false} beforeUpload={beforeUpload} showUploadList={false} disabled={loading}>
       <p className="ant-upload-drag-icon"><InboxOutlined /></p>
       <p className="ant-upload-text">Click or drag resume (PDF/DOCX)</p>

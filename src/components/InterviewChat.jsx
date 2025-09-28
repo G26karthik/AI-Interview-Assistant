@@ -251,8 +251,8 @@ export default function InterviewChat() {
   const weightDisplay = Number.isFinite(current?.score) ? current.score.toFixed(1) : 'Pending';
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }} size="large">
-      <Card aria-live="polite" title="Interview assistant">
+    <Space direction="vertical" style={{ width: '100%' }} size="large" className="fade-in">
+      <Card aria-live="polite" title="Interview assistant" className="card-clean glass-panel">
         <Space direction="vertical" style={{ width: '100%' }} size="middle">
           <div style={{ maxHeight: 320, overflowY: 'auto', paddingRight: 8 }}>
             <List
@@ -275,6 +275,7 @@ export default function InterviewChat() {
                       maxWidth: '75%',
                       lineHeight: 1.5
                     }}
+                    className="chat-bubble"
                   >
                     <Text strong>{item.sender === 'candidate' ? 'You' : 'Swipe AI'}:</Text>{' '}
                     <span>{item.text}</span>
@@ -339,7 +340,7 @@ export default function InterviewChat() {
       </Card>
 
       {contactComplete && (
-        <Card title="Contact details on file">
+        <Card title="Contact details on file" className="card-clean glass-panel">
           <Space wrap>
             <Tag>{current.name}</Tag>
             <Tag>{current.email}</Tag>
@@ -349,7 +350,7 @@ export default function InterviewChat() {
       )}
 
       {current.finished && (
-        <Card title="Interview summary" role="region" aria-label="summary">
+        <Card title="Interview summary" role="region" aria-label="summary" className="card-clean glass-panel">
           <Paragraph>
             <Text strong>Weighted score:</Text> {weightDisplay}
           </Paragraph>

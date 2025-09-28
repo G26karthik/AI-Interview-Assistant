@@ -1,0 +1,104 @@
+/* Global modern styling for AI Interview Assistant */
+html, body, #root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
+  background: radial-gradient(circle at 20% 20%, #1d2230 0%, #0f1115 60%, #0b0d10 100%);
+  color: #e6e9ef;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2f3747; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #3c475b; }
+
+/* Glass / panel utility */
+.glass-panel {
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  box-shadow: 0 4px 18px -4px rgba(0,0,0,0.45), 0 2px 4px -1px rgba(0,0,0,0.4);
+}
+
+.app-shell {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 28px 32px 56px;
+}
+
+.section-grid {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  align-items: start;
+}
+
+.fade-in { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+
+.pill-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px; font-size:12px; font-weight:500;
+  background:linear-gradient(135deg,#243b55,#141e30);
+  color:#9ad4ff; letter-spacing:.3px;
+  box-shadow:0 0 0 1px rgba(102,170,255,0.25), 0 0 0 4px rgba(102,170,255,0.06);
+}
+
+.header-blur {
+  position:sticky; top:0; z-index:50;
+  background:rgba(15,17,21,0.80);
+  backdrop-filter: blur(14px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.brand-gradient { background: linear-gradient(90deg,#5a9bff,#7b5bff 48%, #ff5884); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+.divider-faint { height:1px; background:linear-gradient(90deg,transparent,#2a3141,transparent); margin:20px 0; border:0; }
+
+.card-clean .ant-card-head { border-bottom: 0; }
+.card-clean .ant-card { background: rgba(255,255,255,0.035); }
+
+/* Subtle button accent */
+.ant-btn-primary { background: linear-gradient(90deg,#2563eb,#7c3aed); box-shadow: 0 4px 14px -2px rgba(124,58,237,0.35); }
+.ant-btn-primary:hover { filter: brightness(1.05); }
+
+/* Text utilities */
+.muted { color:#94a3b8; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
+
+/* Dashboard table tone */
+.ant-table { background: rgba(255,255,255,0.03) !important; }
+.ant-table-thead > tr > th { background: rgba(255,255,255,0.05) !important; font-weight:600; }
+.ant-layout { background: transparent !important; }
+
+/* Inputs */
+.ant-input, .ant-input-affix-wrapper, .ant-input-textarea, .ant-select-selector {
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  color: #e3e9f2 !important;
+}
+.ant-input:focus, .ant-input-focused { box-shadow: 0 0 0 2px rgba(100,140,255,0.35); }
+
+/* Cards lighten text color difference */
+.ant-card { background: rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; }
+.ant-card-head { background: transparent !important; }
+
+/* Modal backdrop tweak */
+.ant-modal-content { background: #151a23 !important; border:1px solid #2b3443; }
+.ant-modal-header { background: #151a23 !important; border-bottom:1px solid #202832; }
+.ant-modal-body { color:#d6dae2; }
+
+.timer-text { font-variant-numeric: tabular-nums; font-weight:500; }
+
+/* Tags refinement */
+.ant-tag { background: rgba(255,255,255,0.08); border:none; }
+
+/* Animations for chat bubbles optional could be added later */
+@keyframes bubbleIn { from { opacity:0; transform: translateY(4px) scale(.98);} to { opacity:1; transform: translateY(0) scale(1);} }
+.chat-bubble { animation: bubbleIn .35s ease; }
