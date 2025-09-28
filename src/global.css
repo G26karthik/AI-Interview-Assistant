@@ -5,8 +5,8 @@ html, body, #root {
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, sans-serif;
-  background: radial-gradient(circle at 20% 20%, #1d2230 0%, #0f1115 60%, #0b0d10 100%);
-  color: #e6e9ef;
+  background: linear-gradient(180deg,#ffffff 0%, #f4f7fb 60%, #e8eef5 100%);
+  color: #1f2430;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -18,12 +18,12 @@ body {
 
 /* Glass / panel utility */
 .glass-panel {
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  box-shadow: 0 4px 18px -4px rgba(0,0,0,0.45), 0 2px 4px -1px rgba(0,0,0,0.4);
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(180,190,205,0.45);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px -4px rgba(31,41,55,0.18), 0 2px 4px -1px rgba(31,41,55,0.12);
 }
 
 .app-shell {
@@ -45,59 +45,59 @@ body {
 .pill-badge {
   display:inline-flex; align-items:center; gap:6px;
   padding:4px 10px; border-radius:999px; font-size:12px; font-weight:500;
-  background:linear-gradient(135deg,#243b55,#141e30);
-  color:#9ad4ff; letter-spacing:.3px;
-  box-shadow:0 0 0 1px rgba(102,170,255,0.25), 0 0 0 4px rgba(102,170,255,0.06);
+  background:linear-gradient(135deg,#e0ecff,#d2e3ff);
+  color:#264a87; letter-spacing:.3px;
+  box-shadow:0 0 0 1px rgba(140,175,230,0.6), 0 0 0 4px rgba(140,175,230,0.25);
 }
 
 .header-blur {
   position:sticky; top:0; z-index:50;
-  background:rgba(15,17,21,0.80);
-  backdrop-filter: blur(14px) saturate(160%);
-  border-bottom:1px solid rgba(255,255,255,0.06);
+  background:rgba(255,255,255,0.8);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-bottom:1px solid rgba(210,218,230,0.7);
 }
 
 .brand-gradient { background: linear-gradient(90deg,#5a9bff,#7b5bff 48%, #ff5884); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
-.divider-faint { height:1px; background:linear-gradient(90deg,transparent,#2a3141,transparent); margin:20px 0; border:0; }
+.divider-faint { height:1px; background:linear-gradient(90deg,transparent,#c9d3e0,transparent); margin:20px 0; border:0; }
 
 .card-clean .ant-card-head { border-bottom: 0; }
-.card-clean .ant-card { background: rgba(255,255,255,0.035); }
+.card-clean .ant-card { background: rgba(255,255,255,0.9); }
 
 /* Subtle button accent */
-.ant-btn-primary { background: linear-gradient(90deg,#2563eb,#7c3aed); box-shadow: 0 4px 14px -2px rgba(124,58,237,0.35); }
-.ant-btn-primary:hover { filter: brightness(1.05); }
+.ant-btn-primary { background: linear-gradient(90deg,#2563eb,#6366f1); box-shadow: 0 4px 12px -2px rgba(99,102,241,0.35); }
+.ant-btn-primary:hover { filter: brightness(1.06); }
 
 /* Text utilities */
-.muted { color:#94a3b8; }
+.muted { color:#5f6b7a; }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; }
 
 /* Dashboard table tone */
-.ant-table { background: rgba(255,255,255,0.03) !important; }
-.ant-table-thead > tr > th { background: rgba(255,255,255,0.05) !important; font-weight:600; }
+.ant-table { background: #ffffff !important; }
+.ant-table-thead > tr > th { background: #f1f5f9 !important; font-weight:600; }
 .ant-layout { background: transparent !important; }
 
 /* Inputs */
 .ant-input, .ant-input-affix-wrapper, .ant-input-textarea, .ant-select-selector {
-  background: rgba(255,255,255,0.06) !important;
-  border: 1px solid rgba(255,255,255,0.12) !important;
-  color: #e3e9f2 !important;
+  background: #ffffff !important;
+  border: 1px solid #cdd6e2 !important;
+  color: #1e2430 !important;
 }
-.ant-input:focus, .ant-input-focused { box-shadow: 0 0 0 2px rgba(100,140,255,0.35); }
+.ant-input:focus, .ant-input-focused { box-shadow: 0 0 0 2px rgba(95,130,255,0.30); }
 
-/* Cards lighten text color difference */
-.ant-card { background: rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; }
-.ant-card-head { background: transparent !important; }
+/* Cards */
+.ant-card { background: #ffffff !important; border:1px solid #d7dee9 !important; }
+.ant-card-head { background: #ffffff !important; }
 
-/* Modal backdrop tweak */
-.ant-modal-content { background: #151a23 !important; border:1px solid #2b3443; }
-.ant-modal-header { background: #151a23 !important; border-bottom:1px solid #202832; }
-.ant-modal-body { color:#d6dae2; }
+/* Modal */
+.ant-modal-content { background: #ffffff !important; border:1px solid #d7dee9; }
+.ant-modal-header { background: #ffffff !important; border-bottom:1px solid #e1e7ef; }
+.ant-modal-body { color:#1f2430; }
 
 .timer-text { font-variant-numeric: tabular-nums; font-weight:500; }
 
 /* Tags refinement */
-.ant-tag { background: rgba(255,255,255,0.08); border:none; }
+.ant-tag { background: #eef3f9; border:1px solid #d2dde9; }
 
 /* Animations for chat bubbles optional could be added later */
 @keyframes bubbleIn { from { opacity:0; transform: translateY(4px) scale(.98);} to { opacity:1; transform: translateY(0) scale(1);} }
