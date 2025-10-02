@@ -8,7 +8,7 @@ An AI‑powered, timed technical interview conducted in the browser. Candidates 
 
 <br/>
 
-_Add Deployment URL here (Netlify / Vercel)_
+(https://ai-interview-assistant-rho.vercel.app/)
 
 </div>
 
